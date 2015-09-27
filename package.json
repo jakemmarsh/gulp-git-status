@@ -1,0 +1,36 @@
+{
+  "name": "gulp-git-status",
+  "description": "A Gulp plugin for selectively including source files based on their Git status.",
+  "version": "0.0.1",
+  "homepage": "http://github.com/jakemmarsh/gulp-git-status",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jakemmarsh/gulp-git-status.git"
+  },
+  "author": "Jake Marsh <jakemmarsh@gmail.com>",
+  "main": "./dist/index.js",
+  "license": "MIT",
+  "keywords": [
+    "gulp",
+    "git",
+    "gulpgit",
+    "gulpplugin",
+    "gulp-plugin"
+  ],
+  "engines": {
+    "node": "^4.0.0"
+  },
+  "dependencies": {
+    "gulp-util": "^3.0.6",
+    "through2": "^2.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.25",
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-if": "^1.2.5",
+    "gulp-strip-debug": "^1.0.2",
+    "run-sequence": "^1.1.4"
+  }
+}
