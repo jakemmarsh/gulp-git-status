@@ -1,4 +1,5 @@
-# gulp-git-status
+gulp-git-status [![npm version](https://badge.fury.io/js/gulp-git-status.svg)](http://badge.fury.io/js/gulp-git-status)
+===============
 
 A Gulp plugin for selectively including source files based on their Git status.
 
