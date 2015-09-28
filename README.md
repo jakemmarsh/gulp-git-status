@@ -31,10 +31,13 @@ gulp.task('moveFiles', () => {
 
 #### options.excludeStatus
 
-Type: `String`
-Default: "modified"
+**Type:** `String`
 
-The Git file status to exclude from your piped files. Possible values are: `["modified", "unchanged", "untracked"]`
+**Default:** "modified"
+
+**Possible values:** `["modified", "unchanged", "untracked"]`
+
+The Git file status to exclude from your piped files.
 
 ## License
 
