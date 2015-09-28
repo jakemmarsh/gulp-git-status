@@ -14,18 +14,61 @@ var _gulpUtil = require('gulp-util');
 
 var _gulpUtil2 = _interopRequireDefault(_gulpUtil);
 
-// const PLUGIN_NAME = 'gulp-git-status';
-var DEFAULT_OPTIONS = {};
+var _child_process = require('child_process');
+
+var PLUGIN_NAME = 'gulp-git-status';
+var STATUS_TYPES = ['modified', 'unchanged', 'untracked'];
+var DEFAULT_OPTIONS = {
+  excludeStatus: 'modified'
+};
 
 exports['default'] = function () {
   var options = arguments.length <= 0 || arguments[0] === undefined ? DEFAULT_OPTIONS : arguments[0];
 
+  if (STATUS_TYPES.indexOf(options.excludeStatus) === -1) {
+    options.excludeStatus = 'modified';
+  }
+
+  var getStatus = function getStatus(filePath) {
+    var isModifiedRegex = new RegExp('modified', 'gi');
+    var isUnchangedRegex = new RegExp('nothing to commit', 'gi');
+    var isUntrackedRegex = new RegExp('Untracked files', 'gi');
+
+    return new Promise(function (resolve, reject) {
+      (0, _child_process.exec)('git status ' + filePath, function (err, stdout, stderr) {
+        var status = undefined;
+
+        if (err || stderr) {
+          reject();
+        } else {
+          if (isModifiedRegex.test(stdout)) {
+            status = 'modified';
+          } else if (isUnchangedRegex.test(stdout)) {
+            status = 'unchanged';
+          } else if (isUntrackedRegex.test(stdout)) {
+            status = 'untracked';
+          }
+
+          console.log('file status:', status);
+
+          resolve(status);
+        }
+      });
+    });
+  };
+
   var gitFileStatus = function gitFileStatus(file, enc, cb) {
     var stream = this;
 
-    // TODO: get git status of file and determine if it should be added
-    stream.push(file);
-    cb();
+    getStatus(file.path).then(function (status) {
+      if (status !== options.excludeStatus) {
+        stream.push(file);
+      }
+      return cb();
+    })['catch'](function (err) {
+      stream.emit('error', new _gulpUtil2['default'].PluginError(PLUGIN_NAME, err));
+      return cb();
+    });
 
     return stream;
   };
