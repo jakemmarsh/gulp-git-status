@@ -25,12 +25,24 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
+    "babel": "^5.8.23",
     "babel-core": "^5.8.25",
+    "babel-runtime": "^5.8.25",
     "del": "^2.0.2",
+    "event-stream": "^3.3.1",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
     "gulp-if": "^1.2.5",
     "gulp-strip-debug": "^1.0.2",
-    "run-sequence": "^1.1.4"
+    "mocha": "^2.3.3",
+    "run-sequence": "^1.1.4",
+    "should": "^7.1.0",
+    "sinon": "^1.17.1",
+    "vinyl": "^1.0.0"
+  },
+  "scripts": {
+    "build": "gulp prod",
+    "test": "mocha --compilers js:babel/register test/index.js",
+    "prepublish": "gulp prod"
   }
 }
