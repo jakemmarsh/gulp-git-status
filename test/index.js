@@ -11,10 +11,11 @@ import gulpGitStatus from '../lib';
 describe('gulp-git-status', function() {
 
   before(function() {
-    this.plugin = gulpGitStatus()
+    this.plugin = gulpGitStatus();
   });
 
   beforeEach(function() {
+    this.sandbox = sinon.sandbox.create();
     this.fakeFile = new File({
       contents: es.readArray(['stream', 'with', 'those', 'contents']),
       path: '/path/to/file.js'
@@ -27,26 +28,44 @@ describe('gulp-git-status', function() {
   });
 
   it('should call exec with the correct git command', function(done) {
-    this.timeout(5000);
-
     const plugin = gulpGitStatus();
+    const stub = this.sandbox.stub(proc, 'exec');
 
-    sinon.mock(proc).expects('exec').withArgs(`git status ${this.fakeFile.path}`);
-
+    stub.yields(null, 'git status result', null);
     plugin.write(this.fakeFile);
 
-    plugin.on('data', (file) => {
-      console.log('data:', file);
+    plugin.on('data', () => {
+      sinon.assert.calledWith(stub.firstCall, `git status ${this.fakeFile.path}`);
       done();
     });
   });
 
   it('should ignore any files whose Git status matches options.excludeStatus', function(done) {
-    done();
+    const plugin = gulpGitStatus({ excludeStatus: 'modified' });
+    const stub = this.sandbox.stub(proc, 'exec');
+
+    stub.yields(null, 'modified', null);
+    this.sandbox.mock(plugin).expects('on').withArgs('data', sinon.match.any).never();
+
+    plugin.write(this.fakeFile);
+    setTimeout(done, 500);
   });
 
   it('should include any files whose Git status does not match options.excludeStatus', function(done) {
-    done();
+    const plugin = gulpGitStatus({ excludeStatus: 'modified' });
+    const stub = this.sandbox.stub(proc, 'exec');
+
+    stub.yields(null, 'unchanged', null);
+    plugin.write(this.fakeFile);
+
+    plugin.on('data', (pipedFile) => {
+      pipedFile.should.eql(this.fakeFile);
+      done();
+    });
+  });
+
+  afterEach(function() {
+    if ( this.sandbox ) { this.sandbox.restore(); }
   });
 
 });
