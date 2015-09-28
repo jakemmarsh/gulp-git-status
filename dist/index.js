@@ -32,7 +32,7 @@ exports['default'] = function () {
   var getStatus = function getStatus(filePath) {
     var isModifiedRegex = new RegExp('modified', 'gi');
     var isUnchangedRegex = new RegExp('nothing to commit', 'gi');
-    var isUntrackedRegex = new RegExp('Untracked files', 'gi');
+    var isUntrackedRegex = new RegExp('untracked files', 'gi');
 
     return new Promise(function (resolve, reject) {
       (0, _child_process.exec)('git status ' + filePath, function (err, stdout, stderr) {
@@ -48,8 +48,6 @@ exports['default'] = function () {
           } else if (isUntrackedRegex.test(stdout)) {
             status = 'untracked';
           }
-
-          console.log('file status:', status);
 
           resolve(status);
         }
